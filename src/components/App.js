@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import timeseries from '../data/timeseries';
 import { ResponsiveLine } from '@nivo/line';
 
@@ -13,7 +13,14 @@ import FilterAllNone from './FilterAllNone';
 import FilterDateRange from './FilterDateRange';
 
 function App() {
-	let activeCountries = ['', 'US', 'Italy']; // 'Italy', 'US', 'United Kingdom', 'South Africa', 'Spain', 'France', 'China'
+	let totals = getTotals(timeseries);
+	let countries = getCountries(timeseries);
+	const [activeCountries, setActiveCountries] = useState(getActiveCountries(countries));
+	let data = getDataForChart(timeseries, activeCountries, 'confirmed', false);
+
+	function formatNum(num) {
+		return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	}
 
 	function getTotals(timeseries) {
 		let totals = {
@@ -31,12 +38,15 @@ function App() {
 			totals['recovered'] += country[lastIndex].recovered;
 		});
 
-		totals['active'] = totals['confirmed'] - totals['deaths'] - totals['recovered'];
+		totals['active'] = formatNum(totals['confirmed'] - totals['deaths'] - totals['recovered']);
+		totals['confirmed'] = formatNum(totals['confirmed']);
+		totals['deaths'] = formatNum(totals['deaths']);
+		totals['recovered'] = formatNum(totals['recovered']);
 
 		return totals;
 	}
 
-	function getData(timeseries, activeCountries, type, byDate) {
+	function getDataForChart(timeseries, activeCountries, type, byDate) {
 		let data = [];
 
 		Object.keys(timeseries).forEach(el => {
@@ -45,7 +55,7 @@ function App() {
 			let lastIndex = country.length-1;
 			let day_count = 1;
 
-			if(activeCountries.indexOf(el) > 0) {
+			if(activeCountries[el]) {
 				Object.keys(country).forEach(day => {
 
 					if(byDate || country[day].confirmed > 0) {
@@ -98,10 +108,29 @@ function App() {
 		return countries;
 	}
 
-	let totals = getTotals(timeseries);
-	let data = getData(timeseries, activeCountries, 'confirmed', false);
-	let countries = getCountries(timeseries);
+	function getActiveCountries(countries) {
+		let active = {};
 
+		countries.forEach(el => {
+			active[el.title] = false;
+		});
+
+		return active;
+	}
+
+	function handleCountryChange(e) {
+		const target = e.target;
+		const value = target.checked;
+		const name = target.name;
+
+		console.log([name, value]);
+
+		setActiveCountries(values => ({
+            ...values,
+            [name]: value,
+        }));
+	}
+	
 	return (
 		<div id="app">
 			<div id="topbar" className="d-flex flex-row">
@@ -111,7 +140,7 @@ function App() {
 					</a>
 				</div>
 				<div className="right d-flex align-items-center">
-					<Header />
+					<Header totals={totals} />
 				</div>
 			</div>
 			<div id="main" className="d-flex flex-row">
@@ -119,7 +148,7 @@ function App() {
 					<FilterSortBy />
 					<FilterAllNone />
 					<FilterAllNone />
-					<Countries countries={countries} />
+					<Countries countries={countries} activeCountries={activeCountries} handleCountryChange={handleCountryChange} />
 				</div>
 				<div className="right">
 					<div className="chart"><Chart data={data} /></div>

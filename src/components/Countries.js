@@ -1,16 +1,18 @@
 import React from 'react';
 
-function Countries(countries) {
-	console.log(countries);
+export default ({ countries, activeCountries, handleCountryChange }) => {
 	return (
-		<ul className="list-style-none">
-			{countries.countries !== false && countries.countries.map(
+		<ul id="countries">
+			{countries !== false && countries.map(
                 ({ title, confirmed }) => (
-            		<li><strong>{title}</strong> ({confirmed.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")})</li>
+            		<li key={title} className="d-flex align-items-center">
+            			<label>
+	            			<input name={title} onChange={handleCountryChange} checked={activeCountries[title]} type="checkbox" className="mr-2" />
+	            			<strong>{title}</strong> ({confirmed.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")})
+            			</label>
+        			</li>
             	)
             )}
 		</ul>
 	);
 }
-
-export default Countries;
