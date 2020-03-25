@@ -112,7 +112,7 @@ function App() {
 		let active = {};
 
 		countries.forEach(el => {
-			active[el.title] = false;
+			active[el.title] = (el.title == 'Italy' || el.title == 'US' || el.title == 'China') ? true : false;
 		});
 
 		return active;
@@ -122,8 +122,6 @@ function App() {
 		const target = e.target;
 		const value = target.checked;
 		const name = target.name;
-
-		console.log([name, value]);
 
 		setActiveCountries(values => ({
             ...values,
