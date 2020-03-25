@@ -112,7 +112,7 @@ function App() {
 		let active = {};
 
 		countries.forEach(el => {
-			active[el.title] = (el.title == 'Italy' || el.title == 'US' || el.title == 'China') ? true : false;
+			active[el.title] = (el.title === 'Italy' || el.title === 'US' || el.title === 'China') ? true : false;
 		});
 
 		return active;
