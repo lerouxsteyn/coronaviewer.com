@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Header() {
+export default () => {
 
   return (
     <footer className="footer d-flex align-items-center">
@@ -10,5 +10,3 @@ function Header() {
     </footer>
   );
 }
-
-export default Header;

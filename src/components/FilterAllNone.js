@@ -1,11 +1,9 @@
 import React from 'react';
 
-function FilterAllNone() {
+export default () => {
 
   return (
     <div>
     </div>
   );
 }
-
-export default FilterAllNone;

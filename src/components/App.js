@@ -12,11 +12,14 @@ import FilterSortBy from './FilterSortBy';
 import FilterAllNone from './FilterAllNone';
 import FilterDateRange from './FilterDateRange';
 
-function App() {
-	let totals = getTotals(timeseries);
-	let countries = getCountries(timeseries);
+export default () => {
+	const [countries, setCountries] = useState(getCountries(timeseries));
 	const [activeCountries, setActiveCountries] = useState(getActiveCountries(countries));
+	const [filters, setFilters] = useState({
+		sortby: 'confirmed'
+	});
 	let data = getDataForChart(timeseries, activeCountries, 'confirmed', false);
+	let totals = getTotals(timeseries);
 
 	function formatNum(num) {
 		return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -35,7 +38,7 @@ function App() {
 			let lastIndex = country.length-1;
 			totals['confirmed'] += country[lastIndex].confirmed;
 			totals['deaths'] += country[lastIndex].deaths;
-			totals['recovered'] += country[lastIndex].recovered;
+			totals['recovered'] += (country[lastIndex].recovered === null) ? country[lastIndex-1].recovered : country[lastIndex].recovered;
 		});
 
 		totals['active'] = formatNum(totals['confirmed'] - totals['deaths'] - totals['recovered']);
@@ -92,18 +95,21 @@ function App() {
 		Object.keys(timeseries).forEach(el => {
 			let country = timeseries[el];
 			let lastIndex = country.length-1;
+			let recovered = (country[lastIndex].recovered === null) ? country[lastIndex-1].recovered : country[lastIndex].recovered;
+			if(recovered === null) { recovered = country[lastIndex-2].recovered; }
+			if(recovered === null) { recovered = 0; }
 
 			countries.push({
 				title: el,
 				confirmed: country[lastIndex].confirmed,
 				deaths: country[lastIndex].deaths,
-				recovered: country[lastIndex].recovered,
-				active: (country[lastIndex].confirmed - country[lastIndex].deaths - country[lastIndex].recovered)
+				recovered: recovered,
+				active: (country[lastIndex].confirmed - country[lastIndex].deaths - recovered)
 			});
 		});
 
 		//sort by confirmed, then title
-		countries.sort((a, b) => (a.confirmed > b.confirmed) ? -1 : (a.confirmed === b.confirmed) ? ((a.title > b.title) ? 1 : -1) : 1 )
+		countries.sort((a, b) => (a.confirmed > b.confirmed) ? -1 : (a.confirmed === b.confirmed) ? ((a.title > b.title) ? 1 : -1) : 1 );
 
 		return countries;
 	}
@@ -128,6 +134,25 @@ function App() {
             [name]: value,
         }));
 	}
+
+	function handleFilterSortBy(e) {
+		const name = e.target.name;
+		const value = e.target.value;
+		let c;
+
+		if(value == 'alphabetically') {
+			c = countries.sort((a, b) => (a.title > b.title) ? 1 : -1);
+		} else {
+			c = countries.sort((a, b) => (a[value] > b[value]) ? -1 : (a[value] === b[value]) ? ((a.title > b.title) ? 1 : -1) : 1 );
+		}
+
+		setCountries(c);
+
+		setFilters(values => ({
+            ...values,
+            [name]: value,
+        }));
+	}
 	
 	return (
 		<div id="app">
@@ -143,10 +168,10 @@ function App() {
 			</div>
 			<div id="main" className="d-flex flex-row">
 				<div className="left">
-					<FilterSortBy />
+					<FilterSortBy filters={filters} handleFilterSortBy={handleFilterSortBy} />
 					<FilterAllNone />
 					<FilterAllNone />
-					<Countries countries={countries} activeCountries={activeCountries} handleCountryChange={handleCountryChange} />
+					<Countries countries={countries} filters={filters} activeCountries={activeCountries} handleCountryChange={handleCountryChange} />
 				</div>
 				<div className="right">
 					<div className="chart"><Chart data={data} /></div>
@@ -156,5 +181,3 @@ function App() {
 		</div>
 	);
 }
-
-export default App;

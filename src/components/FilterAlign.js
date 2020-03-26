@@ -1,11 +1,9 @@
 import React from 'react';
 
-function FilterAlign() {
+export default () => {
 
   return (
     <div>
     </div>
   );
 }
-
-export default FilterAlign;

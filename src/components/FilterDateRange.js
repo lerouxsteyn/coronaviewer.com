@@ -1,11 +1,9 @@
 import React from 'react';
 
-function FilterDateRange() {
+export default () => {
 
   return (
     <div>
     </div>
   );
 }
-
-export default FilterDateRange;

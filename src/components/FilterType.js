@@ -1,11 +1,9 @@
 import React from 'react';
 
-function FilterType() {
+export default () => {
 
   return (
     <div>
     </div>
   );
 }
-
-export default FilterType;

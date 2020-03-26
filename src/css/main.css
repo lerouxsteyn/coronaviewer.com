@@ -89,7 +89,6 @@ footer.footer p {
 
 #countries {
 	padding: 0;
-	margin: 10px 0;
 	list-style: none;
 }
 
@@ -99,4 +98,14 @@ footer.footer p {
 
 #countries li label {
 	margin: 1px 0;
+}
+
+
+/* Forms */
+
+select.custom-select {
+	width: auto;
+	font-size: 13px;
+	padding: 5px 30px 5px 10px;
+	height: auto;
 }

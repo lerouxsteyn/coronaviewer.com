@@ -1,11 +1,11 @@
 import React from 'react';
 import { ResponsiveLine } from '@nivo/line';
 
-function Chart(data) {
+export default ({ data }) => {
 
 	return (
 		<ResponsiveLine
-			data={data.data}
+			data={data}
 			margin={{ top: 20, right: 150, bottom: 60, left: 60 }}
 			enablePoints={true}
 			xScale={{ type: 'point' }}
@@ -67,5 +67,3 @@ function Chart(data) {
 		/>
 	);
 }
-
-export default Chart;
