@@ -30,8 +30,23 @@ h2 strong {
 	font-weight: 500;
 }
 
-a {
+a, button {
+	color: #0e3fcb !important;
 	text-decoration: none !important;
+	transition: 0.3s ease all;
+}
+
+a:hover, button:hover {
+	color: #000 !important;
+}
+
+button {
+	outline: none !important;
+	box-shadow: none !important;
+}
+
+h1.title {
+	color: #fff;
 }
 
 
@@ -48,8 +63,14 @@ a {
 }
 
 #topbar {
+	color: #fff;
+	background: #0e3fcb;
 	height: 50px;
 	box-shadow: 3px 3px 5px rgba(0,0,0, 0.03);
+}
+
+#topbar a {
+	color: #fff;
 }
 
 #main,
@@ -67,9 +88,25 @@ header.header {
 	height: 50px;
 }
 
-footer.footer p {
+footer.footer {
+	padding-right: 140px;
+	height: 50px;
+}
+
+footer.footer > div {
 	margin: 0;
 	font-size: 11px;
+}
+
+footer.footer .social {
+	float: right;
+	font-size: 12px;
+}
+
+.social strong,
+.social button {
+	margin-left: 5px;
+	margin-right: 5px;
 }
 
 .totals {
