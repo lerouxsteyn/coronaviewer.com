@@ -52,6 +52,10 @@ h1.title {
 
 /* Layout */
 
+#app {
+	min-width: 1200px;
+}
+
 .left {
 	padding-left: 20px;
 	width: 300px;
@@ -60,6 +64,7 @@ h1.title {
 
 .right {
 	width: calc(100vw - 300px);
+	min-width: 900px;
 }
 
 #topbar {
