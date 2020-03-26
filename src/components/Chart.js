@@ -33,7 +33,7 @@ export default ({ data }) => {
 				legendPosition: 'middle'
 			}}
 			colors={{ scheme: 'category10' }}
-			pointSize={7}
+			pointSize={0}
 			pointColor={{ theme: 'background' }}
 			pointBorderWidth={2}
 			pointBorderColor={{ from: 'serieColor' }}

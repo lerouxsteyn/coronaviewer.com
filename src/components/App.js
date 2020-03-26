@@ -13,18 +13,33 @@ import FilterAllNone from './FilterAllNone';
 import FilterDateRange from './FilterDateRange';
 
 export default () => {
+
+	// Fix null recoveries in data
+	Object.keys(timeseries).forEach(el => {
+		let lastRecovered = 0;
+		let country = timeseries[el];
+		Object.keys(country).forEach(day => {
+			if(country[day].recovered !== null) {
+				lastRecovered = country[day].recovered;
+			} else {
+				country[day].recovered = lastRecovered;
+			}
+		});	
+	});
+
 	const [countries, setCountries] = useState(getCountries(timeseries));
 	const [activeCountries, setActiveCountries] = useState(getActiveCountries(countries));
 	const [filters, setFilters] = useState({
 		sortby: 'confirmed',
-		type: 'confirmed'
+		type: 'confirmed',
+		align: true
 	});
-	const [data, setData] = useState(getDataForChart(timeseries, activeCountries, 'confirmed', false));
+	const [data, setData] = useState(getDataForChart(timeseries, activeCountries, 'confirmed', !filters.align));
 	let totals = getTotals(timeseries);
 
 	useEffect(() => {
-        setData(getDataForChart(timeseries, activeCountries, filters.type, false));
-    }, [activeCountries]);
+        setData(getDataForChart(timeseries, activeCountries, filters.type, !filters.align));
+    }, [activeCountries, filters]);
 
 	function formatNum(num) {
 		return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -159,17 +174,15 @@ export default () => {
         }));
 	}
 
-	function handleFilterType(e) {
+	function handleFilter(e) {
 		const target = e.target;
-		const value = target.value;
+		const value = (target.type == 'checkbox') ? target.checked : target.value;
 		const name = target.name;
 
 		setFilters(values => ({
             ...values,
             [name]: value,
         }));
-
-        setData(getDataForChart(timeseries, activeCountries, value, false));
 	}
 
 	return (
@@ -188,14 +201,16 @@ export default () => {
 				<div className="left">
 					<FilterSortBy filters={filters} handleFilterSortBy={handleFilterSortBy} />
 					<FilterAllNone />
-					<FilterAllNone />
 					<Countries countries={countries} filters={filters} activeCountries={activeCountries} handleCountryChange={handleCountryChange} />
 				</div>
 				<div className="right">
-					<div id="filters" className="d-flex align-items-center">
-						<FilterType filters={filters} handleFilterType={handleFilterType} />
+					<div id="filters" className="d-flex align-items-center justify-content-between">
+						<FilterType filters={filters} handleFilter={handleFilter} />
+						<FilterAlign filters={filters} handleFilter={handleFilter} />
 					</div>
-					<div className="chart"><Chart data={data} /></div>
+					<div className="chart">
+						<Chart data={data} />
+					</div>
 					<Footer />
 				</div>
 			</div>
