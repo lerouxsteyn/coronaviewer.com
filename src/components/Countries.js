@@ -2,8 +2,6 @@ import React from 'react';
 
 export default ({ countries, activeCountries, handleCountryChange, filters }) => {
 
-	console.log(countries);
-
 	function renderNumber(filters, confirmed, active, recovered, deaths) {
 		let num = 0;
 		let suffix = '';

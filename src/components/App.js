@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import timeseries from '../data/timeseries';
 import { ResponsiveLine } from '@nivo/line';
 
@@ -16,10 +16,15 @@ export default () => {
 	const [countries, setCountries] = useState(getCountries(timeseries));
 	const [activeCountries, setActiveCountries] = useState(getActiveCountries(countries));
 	const [filters, setFilters] = useState({
-		sortby: 'confirmed'
+		sortby: 'confirmed',
+		type: 'confirmed'
 	});
-	let data = getDataForChart(timeseries, activeCountries, 'confirmed', false);
+	const [data, setData] = useState(getDataForChart(timeseries, activeCountries, 'confirmed', false));
 	let totals = getTotals(timeseries);
+
+	useEffect(() => {
+        setData(getDataForChart(timeseries, activeCountries, filters.type, false));
+    }, [activeCountries]);
 
 	function formatNum(num) {
 		return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -153,7 +158,20 @@ export default () => {
             [name]: value,
         }));
 	}
-	
+
+	function handleFilterType(e) {
+		const target = e.target;
+		const value = target.value;
+		const name = target.name;
+
+		setFilters(values => ({
+            ...values,
+            [name]: value,
+        }));
+
+        setData(getDataForChart(timeseries, activeCountries, value, false));
+	}
+
 	return (
 		<div id="app">
 			<div id="topbar" className="d-flex flex-row">
@@ -174,6 +192,9 @@ export default () => {
 					<Countries countries={countries} filters={filters} activeCountries={activeCountries} handleCountryChange={handleCountryChange} />
 				</div>
 				<div className="right">
+					<div id="filters" className="d-flex align-items-center">
+						<FilterType filters={filters} handleFilterType={handleFilterType} />
+					</div>
 					<div className="chart"><Chart data={data} /></div>
 					<Footer />
 				</div>

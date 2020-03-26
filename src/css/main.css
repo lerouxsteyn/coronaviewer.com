@@ -59,7 +59,7 @@ a {
 }
 
 .chart {
-	height: calc(100vh - 100px);
+	height: calc(100vh - 150px);
 }
 
 header.header {
@@ -98,6 +98,20 @@ footer.footer p {
 
 #countries li label {
 	margin: 1px 0;
+}
+
+#filters {
+	height: 50px;
+}
+
+#filter_type {
+	padding-top: 15px;
+}
+
+#filter_type label {
+	font-size: 13px;
+	font-weight: bold;
+	margin-right: 10px;
 }
 
 
