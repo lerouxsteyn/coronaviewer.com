@@ -91,7 +91,7 @@ export default () => {
 
 						dataArr.push({
 							"x": (byDate) ? country[day].date : 'Day '+day_count,
-							"y": stat[type]
+							"y": stat[type],
 						});
 
 						day_count++;
@@ -138,7 +138,7 @@ export default () => {
 		let active = {};
 
 		countries.forEach(el => {
-			active[el.title] = (el.title === 'Italy' || el.title === 'US' || el.title === 'China') ? true : false;
+			active[el.title] = (el.title === 'Italy' || el.title === 'US' || el.title === 'Spain') ? true : false;
 		});
 
 		return active;
