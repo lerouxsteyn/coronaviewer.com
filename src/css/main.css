@@ -140,6 +140,7 @@ footer.footer .social {
 
 #countries li label {
 	margin: 1px 0;
+	cursor: pointer;
 }
 
 #filters {
@@ -168,6 +169,15 @@ footer.footer .social {
 
 .disabled {
 	color: #ccc;
+}
+
+.disabled-all .disabled {
+	color: inherit;
+}
+
+.disabled-all {
+	pointer-events: none;
+	opacity: 0.3;
 }
 
 

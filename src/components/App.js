@@ -28,6 +28,7 @@ export default () => {
 
 	const [countries, setCountries] = useState(getCountries(timeseries));
 	const [activeCountries, setActiveCountries] = useState(getActiveCountries(countries));
+    const [numCountries, setNumCountries] = useState(0);
 	const [filters, setFilters] = useState({
 		sortby: 'confirmed',
 		type: 'confirmed',
@@ -41,6 +42,15 @@ export default () => {
 
 	useEffect(() => {
         setData(getDataForChart(timeseries, activeCountries, filters.type, !filters.align));
+
+        let numC = 0;
+        Object.keys(activeCountries).forEach(c => {
+        	if(activeCountries[c]) {
+        		numC++;
+			}
+        });
+
+        setNumCountries(numC);
     }, [activeCountries, filters]);
 
 	function formatNum(num) {
@@ -89,8 +99,8 @@ export default () => {
 						};
 
 						dataArr.push({
-							"x": (byDate) ? country[day].date : 'Day '+day_count,
-							"y": stat[type],
+							'x': (byDate) ? country[day].date : 'Day '+day_count,
+							'y': stat[type],
 						});
 
 						day_count++;
@@ -99,15 +109,65 @@ export default () => {
 				});
 
 				data.push({
-					"id": el,
-					"data": dataArr
+					'id': el,
+					'data': dataArr
 				});
 			}
 		});
 
-		console.log(data);
+		if(data.length === 0) {
+			data = getAllCountriesData(timeseries, byDate);
+		}
 
 		return data;
+	}
+
+	function getAllCountriesData(timeseries, byDate) {
+        let dataConfirmed = [];
+        let dataActive = [];
+        let dataRecoveries = [];
+        let dataDeaths = [];
+        let day_count = 1;
+
+        // loop dates for any country to get all date indexes
+        Object.keys(timeseries['China']).forEach(d => {
+            let totalConfirmed = 0;
+            let totalActive = 0;
+            let totalRecoveries = 0;
+            let totalDeaths = 0;
+
+        	// loop countries
+            Object.keys(timeseries).forEach(el => {
+                totalConfirmed += timeseries[el][d]['confirmed'];
+                totalActive += (timeseries[el][d]['confirmed'] - timeseries[el][d]['recovered'] - timeseries[el][d]['deaths']);
+                totalRecoveries += timeseries[el][d]['recovered'];
+                totalDeaths += timeseries[el][d]['deaths'];
+            });
+
+            dataConfirmed.push({ 'x': (byDate) ? timeseries['China'][d]['date'] : 'Day '+day_count, 'y': totalConfirmed });
+            dataActive.push({ 'x': (byDate) ? timeseries['China'][d]['date'] : 'Day '+day_count, 'y': totalActive });
+            dataRecoveries.push({ 'x': (byDate) ? timeseries['China'][d]['date'] : 'Day '+day_count, 'y': totalRecoveries });
+            dataDeaths.push({ 'x': (byDate) ? timeseries['China'][d]['date'] : 'Day '+day_count, 'y': totalDeaths });
+
+            day_count++;
+        });
+
+        let data = [{
+            'id': 'Total Deaths',
+            'data': dataDeaths
+        },{
+            'id': 'Total Active',
+            'data': dataActive
+        },{
+            'id': 'Total Recoveries',
+            'data': dataRecoveries,
+            "color": "hsl(54,78%,72%)",
+        },{
+            'id': 'Total Confirmed',
+            'data': dataConfirmed
+        }];
+
+        return data;
 	}
 
 	function getCountries(timeseries) {
@@ -139,7 +199,7 @@ export default () => {
 		let active = {};
 
 		countries.forEach(el => {
-            active[el.title] = (el.title === 'Italy' || el.title === 'US' || el.title === 'Spain') ? true : false;
+            active[el.title] = false; // (el.title === 'Italy' || el.title === 'US' || el.title === 'Spain') ? true : false;
 		});
 
 		return active;
@@ -218,11 +278,13 @@ export default () => {
 					<Countries countries={countries} filters={filters} activeCountries={activeCountries} handleCountryChange={handleCountryChange} />
 				</div>
 				<div className="right">
-					<div id="filters" className="d-flex align-items-center justify-content-between">
-						<FilterType filters={filters} handleFilter={handleFilter} />
-						<div className="d-flex flex-row justify-content-end">
-							<FilterLog filters={filters} handleFilter={handleFilter} />
-							<FilterAlign filters={filters} handleFilter={handleFilter} />
+					<div className={numCountries === 0 ? 'disabled-all' : ''}>
+						<div id="filters" className="d-flex align-items-center justify-content-between">
+							<FilterType filters={filters} handleFilter={handleFilter} />
+							<div className="d-flex flex-row justify-content-end">
+								<FilterLog filters={filters} handleFilter={handleFilter} numCountries={numCountries} />
+								<FilterAlign filters={filters} handleFilter={handleFilter} />
+							</div>
 						</div>
 					</div>
 					<div className="chart">
