@@ -25,6 +25,8 @@ export default ({ countries, activeCountries, handleCountryChange, filters }) =>
 				num = deaths;
 				suffix = ' deaths';
 				break;
+			default:
+				break;
 		}
 		return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + suffix;
 	}

@@ -156,10 +156,18 @@ footer.footer .social {
 	margin-right: 10px;
 }
 
-#filter_align {
+.filter_align {
 	padding-top: 15px;
-	margin-right: 150px;
 	font-size: 13px;
+}
+
+.filter_align:last-child {
+	margin-right: 150px;
+	margin-left: 15px;
+}
+
+.disabled {
+	color: #ccc;
 }
 
 

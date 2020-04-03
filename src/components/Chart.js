@@ -1,7 +1,7 @@
 import React from 'react';
 import { ResponsiveLine } from '@nivo/line';
 
-export default ({ data }) => {
+export default ({ data, filters }) => {
 
 	return (
 		<ResponsiveLine
@@ -9,7 +9,7 @@ export default ({ data }) => {
 			margin={{ top: 20, right: 150, bottom: 60, left: 60 }}
 			enablePoints={true}
 			xScale={{ type: 'point' }}
-			yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
+			yScale={{ type: filters['scale'], min: 'auto', max: 'auto', stacked: false, reverse: false }}
 			lineWidth={2}
 			motionStiffness={300}
 			axisTop={null}
@@ -30,7 +30,8 @@ export default ({ data }) => {
 				tickRotation: 0,
 				legend: '',
 				legendOffset: -40,
-				legendPosition: 'middle'
+				legendPosition: 'middle',
+				tickValues: filters[filters['scale']]
 			}}
 			colors={{ scheme: 'category10' }}
 			pointSize={0}

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default ({ totals }) => {
+export default ({ totals, formatNum }) => {
 
   	return (
 	    <header className="header d-flex flex-row align-items-center justify-content-between w-100">
@@ -8,19 +8,19 @@ export default ({ totals }) => {
 	    	<div className="totals d-flex flex-row">
 	    		<div>
 	    			<strong>Confirmed:</strong><br />
-	    			<span className="total-number">{totals.confirmed}</span>
+	    			<span className="total-number">{formatNum(totals.confirmed)}</span>
 	    		</div>
 	    		<div>
 	    			<strong>Active:</strong><br />
-	    			<span className="total-number">{totals.active}</span>
+	    			<span className="total-number">{formatNum(totals.active)}</span>
 	    		</div>
 	    		<div>
 	    			<strong>Recoveries:</strong><br />
-	    			<span className="total-number">{totals.recovered}</span>
+	    			<span className="total-number">{formatNum(totals.recovered)}</span>
 	    		</div>
 	    		<div>
 	    			<strong>Deaths:</strong><br />
-	    			<span className="total-number">{totals.deaths}</span>
+	    			<span className="total-number">{formatNum(totals.deaths)}</span>
 	    		</div>
 	    	</div>
 	    </header>
