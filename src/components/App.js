@@ -32,16 +32,16 @@ export default () => {
 	const [filters, setFilters] = useState({
 		sortby: 'confirmed',
 		type: 'confirmed',
-		align: true,
+		align: 'case_100', // day_1, case_100, date
 		scale: 'linear',
 		linear: 10,
 		log: [1, 2, 10, 20, 100, 200, 1000, 2000, 10000, 20000, 100000, 200000, 1000000],
 	});
-	const [data, setData] = useState(getDataForChart(timeseries, activeCountries, 'confirmed', !filters.align));
+	const [data, setData] = useState(getDataForChart(timeseries, activeCountries, 'confirmed', filters.align));
 	let totals = getTotals(timeseries);
 
 	useEffect(() => {
-        setData(getDataForChart(timeseries, activeCountries, filters.type, !filters.align));
+        setData(getDataForChart(timeseries, activeCountries, filters.type, filters.align));
 
         let numC = 0;
         Object.keys(activeCountries).forEach(c => {
@@ -79,8 +79,9 @@ export default () => {
 		return totals;
 	}
 
-	function getDataForChart(timeseries, activeCountries, type, byDate) {
+	function getDataForChart(timeseries, activeCountries, type, align) {
 		let data = [];
+		const byDate = (align == 'date') ? true : false;
 
 		Object.keys(timeseries).forEach(el => {
 			let dataArr = [];
@@ -90,7 +91,7 @@ export default () => {
 			if(activeCountries[el]) {
 				Object.keys(country).forEach(day => {
 
-					if(byDate || country[day].confirmed > 0) {
+					if(byDate || (align === 'day_1' && country[day].confirmed > 0) || (align === 'case_100' && country[day].confirmed > 99)) {
 						let stat = {
 							confirmed: country[day].confirmed,
 							deaths: country[day].deaths,
@@ -99,7 +100,7 @@ export default () => {
 						};
 
 						dataArr.push({
-							'x': (byDate) ? country[day].date : 'Day '+day_count,
+							'x': (byDate) ? country[day].date : day_count,
 							'y': stat[type],
 						});
 
@@ -144,10 +145,10 @@ export default () => {
                 totalDeaths += timeseries[el][d]['deaths'];
             });
 
-            dataConfirmed.push({ 'x': (byDate) ? timeseries['China'][d]['date'] : 'Day '+day_count, 'y': totalConfirmed });
-            dataActive.push({ 'x': (byDate) ? timeseries['China'][d]['date'] : 'Day '+day_count, 'y': totalActive });
-            dataRecoveries.push({ 'x': (byDate) ? timeseries['China'][d]['date'] : 'Day '+day_count, 'y': totalRecoveries });
-            dataDeaths.push({ 'x': (byDate) ? timeseries['China'][d]['date'] : 'Day '+day_count, 'y': totalDeaths });
+            dataConfirmed.push({ 'x': (byDate) ? timeseries['China'][d]['date'] : day_count, 'y': totalConfirmed });
+            dataActive.push({ 'x': (byDate) ? timeseries['China'][d]['date'] : day_count, 'y': totalActive });
+            dataRecoveries.push({ 'x': (byDate) ? timeseries['China'][d]['date'] : day_count, 'y': totalRecoveries });
+            dataDeaths.push({ 'x': (byDate) ? timeseries['China'][d]['date'] : day_count, 'y': totalDeaths });
 
             day_count++;
         });

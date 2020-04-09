@@ -21,7 +21,8 @@ export default ({ data, filters }) => {
 				tickRotation: -90,
 				legend: '',
 				legendOffset: 36,
-				legendPosition: 'middle'
+				legendPosition: 'middle',
+                legend: (filters['align'] === 'date') ? '' : 'Days'
 			}}
 			axisLeft={{
 				orient: 'left',
