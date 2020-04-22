@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import timeseries from '../data/timeseries';
+import ReactGA from 'react-ga';
 
 import Chart from './Chart';
 import Header from './Header';
@@ -12,7 +13,6 @@ import FilterSortBy from './FilterSortBy';
 import FilterAllNone from './FilterAllNone';
 
 export default () => {
-
 	// Fix null recoveries in data
 	Object.keys(timeseries).forEach(el => {
 		let lastRecovered = 0;
@@ -215,6 +215,16 @@ export default () => {
             ...values,
             [name]: value,
         }));
+
+		if(value) {
+            console.log(['Country', name, 'Select']);
+
+            ReactGA.event({
+                category: 'Country',
+                action: name,
+                label: 'Select'
+            });
+		}
 	}
 
 	function handleFilterSortBy(e) {
@@ -234,6 +244,14 @@ export default () => {
             ...values,
             [name]: value,
         }));
+
+        console.log(['Sort Countries', value]);
+
+        ReactGA.event({
+            category: 'Sort Countries',
+            action: value,
+            label: ''
+        });
 	}
 
 	function handleFilter(e) {
@@ -243,6 +261,14 @@ export default () => {
 
 		if(name === 'scale') {
 			value = (value) ? 'log' : 'linear';
+
+			console.log(['Scale', value]);
+
+            ReactGA.event({
+                category: 'Scale',
+                action: value,
+                label: ''
+            });
 		}
 
 		// only confirmed cases can have log scale
@@ -257,6 +283,26 @@ export default () => {
                 ...values,
                 [name]: value,
             }));
+		}
+
+		if(name == 'align') {
+            console.log(['Align', value]);
+
+            ReactGA.event({
+                category: 'Align',
+                action: value,
+                label: ''
+            });
+		}
+
+		if(name == 'type') {
+			console.log(['Filter Type', value]);
+
+            ReactGA.event({
+                category: 'Filter Type',
+                action: value,
+                label: ''
+            });
 		}
 	}
 
