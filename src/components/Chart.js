@@ -2,14 +2,13 @@ import React from 'react';
 import { ResponsiveLine } from '@nivo/line';
 
 export default ({ data, filters }) => {
-
 	return (
 		<ResponsiveLine
 			data={data}
-			margin={{ top: 20, right: 150, bottom: 60, left: 60 }}
+			margin={{top: 20, right: 150, bottom: 60, left: 60}}
 			enablePoints={true}
-			xScale={{ type: 'point' }}
-			yScale={{ type: filters['scale'], min: 'auto', max: 'auto', stacked: false, reverse: false }}
+			xScale={{type: 'point'}}
+			yScale={{type: filters['scale'], min: 'auto', max: 'auto', stacked: false, reverse: false}}
 			lineWidth={2}
 			motionStiffness={300}
 			axisTop={null}
@@ -22,7 +21,7 @@ export default ({ data, filters }) => {
 				legend: '',
 				legendOffset: 36,
 				legendPosition: 'middle',
-                legend: (filters['align'] === 'date') ? '' : 'Days'
+				legend: (filters['align'] === 'date') ? '' : 'Days'
 			}}
 			axisLeft={{
 				orient: 'left',
@@ -34,11 +33,11 @@ export default ({ data, filters }) => {
 				legendPosition: 'middle',
 				tickValues: filters[filters['scale']]
 			}}
-			colors={{ scheme: 'category10' }}
+			colors={{scheme: 'category10'}}
 			pointSize={0}
-			pointColor={{ theme: 'background' }}
+			pointColor={{theme: 'background'}}
 			pointBorderWidth={2}
-			pointBorderColor={{ from: 'serieColor' }}
+			pointBorderColor={{from: 'serieColor'}}
 			pointLabel="y"
 			pointLabelYOffset={-12}
 			useMesh={true}

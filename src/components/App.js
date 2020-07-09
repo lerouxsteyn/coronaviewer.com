@@ -11,6 +11,7 @@ import FilterType from './FilterType';
 import FilterAlign from './FilterAlign';
 import FilterSortBy from './FilterSortBy';
 import FilterAllNone from './FilterAllNone';
+import FilterCumulative from './FilterCumulative';
 
 export default () => {
 	// Fix null recoveries in data
@@ -35,6 +36,7 @@ export default () => {
 		align: 'case_100', // day_1, case_100, date
 		scale: 'linear',
 		linear: 10,
+		cumulative: true,
 		log: [1, 2, 10, 20, 100, 200, 1000, 2000, 10000, 20000, 100000, 200000, 1000000],
 	});
 	const [data, setData] = useState(getDataForChart(timeseries, activeCountries, 'confirmed', filters.align));
@@ -87,6 +89,7 @@ export default () => {
 			let dataArr = [];
 			let country = timeseries[el];
 			let day_count = 1;
+			let last_day = false;
 
 			if(activeCountries[el]) {
 				Object.keys(country).forEach(day => {
@@ -98,6 +101,19 @@ export default () => {
 							recovered: country[day].recovered,
 							active: (country[day].confirmed - country[day].deaths - country[day].recovered),
 						};
+
+						let save = stat;
+
+						if(!filters.cumulative && last_day) {
+							stat = {
+                                confirmed: (stat.confirmed-last_day.confirmed),
+                                deaths: (stat.deaths-last_day.deaths),
+                                recovered: (stat.recovered-last_day.recovered),
+                                active: (stat.active-last_day.active)
+							}
+						}
+
+                        last_day = save;
 
 						dataArr.push({
 							'x': (byDate) ? country[day].date : day_count,
@@ -329,6 +345,7 @@ export default () => {
 						<div id="filters" className="d-flex align-items-center justify-content-between">
 							<FilterType filters={filters} handleFilter={handleFilter} />
 							<div className="d-flex flex-row justify-content-end">
+                                <FilterCumulative filters={filters} handleFilter={handleFilter} />
 								<FilterLog filters={filters} handleFilter={handleFilter} numCountries={numCountries} />
 								<FilterAlign filters={filters} handleFilter={handleFilter} />
 							</div>
